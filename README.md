@@ -2,9 +2,8 @@
 
 This project automates the daily extraction, transformation, and loading (ETL) of stock market data using **Apache Airflow**, with data stored in **MongoDB** and visualized using a **Streamlit dashboard**.
 
-> ✅ Designed to reflect a real-world, modular Data Engineering pipeline  
-> 🏢 Built with production-style practices in mind for roles like at McKinsey, QuantumBlack, and other top firms
-
+> ✅ Designed to reflect a real-world, modular Data Engineering pipeline.
+> 🏢 Built with production-style practices.
 ---
 
 ## 🚀 Tech Stack
@@ -63,7 +62,7 @@ stock-etl-pipeline/
 
 ## 📊 Streamlit Dashboard Preview
 
-> _Add your screenshots here when available_
+> 
 
 ---
 
@@ -90,7 +89,7 @@ airflow db init
 airflow webserver --port 8080
 airflow scheduler
 
-# Start Streamlit (optional)
+# Start Streamlit 
 streamlit run streamlit_dashboard/dashboard.py
 ```
 
