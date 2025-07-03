@@ -1,117 +1,130 @@
-# 📈 Stock Market ETL Pipeline with Apache Airflow & Streamlit
+# 📈 Stock ETL Pipeline with Airflow, MongoDB & Streamlit
 
-This project automates the daily extraction, transformation, and loading (ETL) of stock market data using **Apache Airflow**, with data stored in **MongoDB** and visualized using a **Streamlit dashboard**.
+This project demonstrates a modular, production-style **ETL pipeline** for stock market data using:
 
-> ✅ Designed to reflect a real-world, modular Data Engineering pipeline.
-> 🏢 Built with production-style practices.
----
-
-## 🚀 Tech Stack
-
-- **Apache Airflow** – DAG orchestration  
-- **Python** – ETL logic  
-- **MongoDB** – NoSQL data storage  
-- **Streamlit** – Dashboard for data visualization  
-- **JSON** – Config-based design for modularity
+- **Apache Airflow** for orchestration  
+- **MongoDB** for storage  
+- **Streamlit** for visualization
 
 ---
 
-## 📌 Features
+## 🚀 Features
 
-- Modular architecture: `Extract`, `Transform`, and `Load` stages are separated as Python modules
-- Scheduled DAG runs with retry logic and email alerts
-- Secure config loading via JSON (excluded from repo)
-- XCom-based task communication between tasks
-- Integrated Streamlit dashboard for visualizing processed stock data
+- Modularized ETL design (Extract, Transform, Load)
+- DAG-based orchestration via Apache Airflow
+- Secrets/config handled via external JSON
+- Raw & processed data stored in MongoDB
+- Streamlit dashboard for visualization
+- Real-world reproducible structure
 
 ---
 
-## 🗂️ Project Structure
+## 📦 Tech Stack
+
+- Python 3.10  
+- Apache Airflow  
+- MongoDB  
+- Streamlit  
+- JSON (for config)  
+
+---
+
+## 📁 Project Structure
 
 ```
 stock-etl-pipeline/
+│
 ├── dags/
-│   └── etl_stock_pipeline.py         # Main Airflow DAG
+│   └── etl_stock_pipeline.py        # Airflow DAG definition
+│
 ├── stock_etl_model/
-│   ├── extract_stage.py              # Data extraction logic
-│   ├── transform_stage.py            # Transformation rules
-│   └── load_stage.py                 # MongoDB loading logic
-├── streamlit_dashboard/
-│   └── dashboard.py                  # Streamlit app for visualization
-├── requirements.txt
-├── .gitignore
-└── README.md
+│   ├── extract_stage.py             # Extract stage logic
+│   ├── transform_stage.py           # Transform stage logic
+│   └── load_stage.py                # Load stage logic
+│
+├── output/                          # Screenshots of ETL & dashboard
+│
+├── streamlit_app.py                 # Streamlit visualization
+├── password.json                    # Secrets (excluded from Git)
+└── README.md                        # Project description
 ```
 
 ---
 
-## 🧪 How It Works
+## 🔁 DAG Overview
 
-1. **`get_config` Task**  
-   Reads credentials and config values from a local `password.json` (excluded from repo).
-2. **`extract` Task**  
-   Fetches stock data via APIs using credentials.
-3. **`transform` Task**  
-   Cleans and structures raw data for analysis.
-4. **`load` Task**  
-   Inserts final dataset into MongoDB.
-5. **Dashboard**  
-   A separate Streamlit app reads from MongoDB and displays charts like volume and close price trends.
+Workflow in Airflow DAG:
 
----
-
-## 📊 Streamlit Dashboard Preview
-
-> 
+```text
+1. get_config → reads secret config
+2. extract_config_values → parses necessary keys
+3. extract → calls API with credentials
+4. transform → processes data
+5. load → inserts data into MongoDB
+```
 
 ---
 
-## 🛠️ Setup Instructions
+## 🖼️ Screenshots
+
+| Airflow DAG | DAG Triggered |
+|-------------|----------------|
+| ![](output/DAG_graph.PNG) | ![](output/Manual_trigged_DAG.PNG) |
+
+| All Tasks Completed | MongoDB Output |
+|---------------------|----------------|
+| ![](output/all_task_run_sucessfully.PNG) | ![](output/MongoDB_After_ETL_RUN.PNG) |
+
+| Streamlit Preview |
+|-------------------|
+| ![](output/StreamLit_After_ETL_Run.PNG) |
+
+---
+
+## 📊 Streamlit Dashboard
+
+Launch the dashboard locally:
 
 ```bash
-# Clone the repository
-git clone https://github.com/your-username/stock-etl-pipeline.git
-
-# Navigate to project
-cd stock-etl-pipeline
-
-# Create and activate a virtual environment
-python -m venv airflow_venv
-source airflow_venv/bin/activate  # Linux/Mac
-airflow_venv\Scripts\activate     # Windows
-
-# Install dependencies
-pip install -r requirements.txt
-
-# Start Airflow
-export AIRFLOW_HOME=~/airflow
-airflow db init
-airflow webserver --port 8080
-airflow scheduler
-
-# Start Streamlit 
-streamlit run streamlit_dashboard/dashboard.py
+streamlit run streamlit_app.py
 ```
 
 ---
 
-## 🔒 Environment Configuration
+## 🔐 Config File Format (`password.json`)
 
-> ⚠️ Sensitive values like API keys, Mongo URI, and credentials are stored in `password.json` which is excluded via `.gitignore`.
+This file is required but should not be pushed to GitHub. Example:
+
+```json
+{
+  "symbol": "IBM",
+  "password": "your_api_key",
+  "mongo_uri": "mongodb://localhost:27017",
+  "db_name": "stock_data",
+  "collection_name": "ibm_data"
+}
+```
 
 ---
 
-## 🧠 What I Learned
+## 🧠 Learnings
 
-- Designing modular, production-ready ETL pipelines
-- Implementing XCom-based communication in Airflow
-- Managing DAG scheduling, retries, and failure handling
-- Visualizing real-time data with Streamlit
-- Clean code organization for collaborative projects
+- Designed a real-time ETL flow from scratch  
+- Handled Airflow task dependencies using `XCom`  
+- Managed configs securely outside of DAG  
+- Created an interactive dashboard with Streamlit  
+- Simulated a production-ready pipeline  
 
 ---
 
-## 🙋‍♂️ About Me
+## 👤 Author
 
-I'm a Data Engineer passionate about building practical, real-world pipelines. Currently strengthening my ML & engineering skills with hands-on projects.  
-**Let’s connect:** [LinkedIn → Mithilesh Chaurasiya](https://www.linkedin.com/in/mithilesh1627)
+**Mithilesh Chaurasiya**    
+🔗 [Portfolio](https://mithileshcv.up.railway.app)  
+🔗 [LinkedIn](https://linkedin.com/in/mithilesh1627)
+
+---
+
+## 🌟 Star the Repo
+
+If this project helped you understand real-world Airflow-based pipelines, consider giving it a ⭐ on GitHub!
