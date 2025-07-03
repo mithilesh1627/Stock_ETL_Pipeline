@@ -2,6 +2,7 @@ import streamlit as st
 import pandas as pd
 import pymongo
 import json
+import altair as alt
 class Visualize:
     @staticmethod
     def load_data(MONGO_URI, DB_NAME, COLLECTION_NAME):
@@ -15,21 +16,34 @@ class Visualize:
             df.sort_values("Date", inplace=True)
         return df
 
-
     @staticmethod
     def visual(MONGO_URI, DB_NAME, COLLECTION_NAME):
-        st.title(" IBM Stock Data Dashboard")
+        st.title("IBM Stock Data Dashboard")
         df = Visualize.load_data(MONGO_URI, DB_NAME, COLLECTION_NAME)
+
         if df.empty:
             st.warning("No data found in MongoDB.")
         else:
-            st.subheader(" Latest Records")
+            st.subheader("Latest Records")
             st.dataframe(df.tail(10), use_container_width=True)
 
-            st.subheader(" Stock Price Trend")
-            st.line_chart(df.set_index("Date")["close"])
+            st.subheader("Interactive Stock Price Trend")
+
+            if "Date" in df.columns and "close" in df.columns:
+                chart = alt.Chart(df).mark_line().encode(
+                    x=alt.X("Date:T", title="Date"),
+                    y=alt.Y("close:Q", title="Closing Price"),
+                    tooltip=["Date", "close"]
+                ).interactive()  
+                st.altair_chart(chart, use_container_width=True)
+            else:
+                st.error("Required columns 'Date' and 'close' not found in data.")
 
 with open("/mnt/e/2025/Airflow/stock_etl_model/password.json", 'r') as file:
-     config = json.load(file)
-    
-Visualize.visual(MONGO_URI=config["mongo_uri"], DB_NAME=config["db_name"], COLLECTION_NAME=config["collection_name"])
+    config = json.load(file)
+
+Visualize.visual(
+    MONGO_URI=config["mongo_uri"],
+    DB_NAME=config["db_name"],
+    COLLECTION_NAME=config["collection_name"]
+)
